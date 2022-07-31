@@ -1,17 +1,17 @@
 <template>
 
 
-  <div class="mytag">
-    <span class="left">{{ name }}</span>
-    <span class="right">{{ type }}</span>
+  <div class='mytag'>
+    <span class='left'>{{ name }}</span>
+    <span class='right'>{{ type }}</span>
   </div>
 
 </template>
 
 <script>
 export default {
-  name: "dataTag",
-  props: ["name", "type"]
+  name: 'DataTag',
+  props: ['name', 'type']
 }
 </script>
 

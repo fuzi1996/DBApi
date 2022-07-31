@@ -22,7 +22,7 @@ public class UserController {
             return ResponseDto.fail("username or password error");
         } else {
             String token = JwtUtils.createToken(user.getId().toString(), user.getPassword());
-            return ResponseDto.successWithMsg(token);
+            return ResponseDto.successWithData(token);
         }
 
     }

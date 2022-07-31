@@ -83,9 +83,9 @@ public class IPService {
             String type = t.get("type");
             String ip = t.get("ip");
             if (type.equals("white")) {
-                status.put("whiteIP", ip);
+                status.put("ips", ip);
             } else if (type.equals("black")) {
-                status.put("blackIP", ip);
+                status.put("ips", ip);
             }
         });
         return status;

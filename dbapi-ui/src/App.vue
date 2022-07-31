@@ -1,81 +1,174 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <ElConfigProvider :locale='locale'>
+    <router-view />
+  </ElConfigProvider>
 </template>
 
-<script>
-import Home from '@/views/Home.vue'
+<script lang='ts'>
+import { defineComponent, ref, Ref, watch } from 'vue'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
+import { ElConfigProvider } from 'element-plus'
+import { changeThemeDefaultColor } from '/@/utils/changeThemeColor'
+import { ITheme } from '/@/type/config/theme'
+import theme from '/@/config/theme'
+import { useLayoutStore } from '/@/store/modules/layout'
 
-export default {
-  name: 'app',
+export default defineComponent ({
+  name: 'App',
   components: {
-    Home
+    ElConfigProvider
+  },
+  setup() {
+    changeThemeDefaultColor()
+    const { getSetting } = useLayoutStore()
+
+    // 重新获取主题色
+    const f = () => {
+      let themeArray = theme()
+      return getSetting.theme >= themeArray.length ? themeArray[0] : themeArray[getSetting.theme]
+    }
+
+    let themeStyle:Ref<ITheme> = ref(f())
+    watch(() => getSetting.theme, () => themeStyle.value = f())
+    watch(() => getSetting.color.primary, () => themeStyle.value = f())
+
+    return {
+      locale,
+      themeStyle,
+      getSetting
+    }
   }
-}
+})
 </script>
 
-<style>
-/*每个页面公共css */
-* {
-  margin: 0;
-  padding: 0;
-  /* css3盒子模型 */
-  box-sizing: border-box;
-}
+<style lang='postcss'>
 
-/* 去掉li 的小圆点 */
-li {
-  list-style: none
-}
+    .layout-sidebar-sidesetting > i {
+        background-color: v-bind(themeStyle.sidebarActiveBg);
+        color: v-bind(themeStyle.sidebarColor);
+    }
 
-a {
-  color: #666;
-  text-decoration: none
-}
+    .layout-sidebar {
+        background-color: v-bind(themeStyle.sidebarBg);
 
-img {
-  /* border 0 照顾低版本浏览器 如果 图片外面包含了链接会有边框的问题 */
-  border: 0;
-  /* 取消图片底侧有空白缝隙的问题 */
-  vertical-align: middle
-}
+        .layout-sidebar-logo {
+            background-color: v-bind(themeStyle.logoBg || themeStyle.sidebarBg);
+            color: v-bind(themeStyle.logoColor || themeStyle.sidebarColor);
+        }
 
-#app {
-  font-family: 'Consolas', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /*display: flex;*/
-  /*justify-content: center;*/
-  width: auto;
-  margin: 0 auto;
+        .el-menu {
+            background-color: v-bind(themeStyle.sidebarBg);
+            border-right: 0;
 
-}
+            .el-menu {
+                background-color: v-bind(themeStyle.sidebarChildrenBg);
+            }
+        }
 
-i {
-  font-size: 14px;
-}
+        .el-sub-menu__title {
+            color: v-bind(themeStyle.sidebarColor);
+        }
 
-h2 {
-  margin-bottom: 25px;
-  text-align: center;
-}
+        .el-menu-item {
+            color: v-bind(themeStyle.sidebarColor);
+        }
 
-h4 {
-  margin: 10px 0;
-}
+        .el-menu-item:focus,
+        .el-menu-item:hover,
+        .el-sub-menu__title:hover {
+            background-color: transparent;
+            color: v-bind(themeStyle.sidebarActiveColor);
+        }
 
-.el-button--primary.is-active,
-.el-button--primary:active {
-  background: #20B2AA;
-  border-color: #20B2AA;
-  color: #fff;
-}
+        .el-menu-item-group__title {
+            padding: 0;
+        }
 
-.gap{
-  margin: 0 10px 10px 0;
-}
-body{
-  /*background-color: #eaeaea;*/
-}
+        .el-menu-item.is-active {
+            background-color: v-bind(themeStyle.sidebarActiveBg);
+            color: v-bind(themeStyle.sidebarActiveColor);
+            border-right: 3px solid v-bind(themeStyle.sidebarActiveBorderRightBg);
+        }
+
+        .el-sub-menu.is-active > .el-sub-menu__title,
+        .el-sub-menu.is-active > .el-sub-menu__title > i {
+            color: v-bind(themeStyle.sidebarActiveColor);
+        }
+    }
+
+    .layout-main-navbar {
+        background-color: v-bind(getSetting.mode === "vertical" || getSetting.isPhone ? themeStyle.navbarBg : themeStyle.sidebarBg);
+        color: v-bind(getSetting.mode === "vertical" || getSetting.isPhone ? themeStyle.navbarColor : themeStyle.sidebarColor);
+
+        .el-breadcrumb .el-breadcrumb__inner,
+        .el-breadcrumb .el-breadcrumb__separator,
+        .el-breadcrumb .el-breadcrumb__inner:hover,
+        .el-breadcrumb .el-breadcrumb__separator:hover,
+        .el-dropdown {
+            color: v-bind(themeStyle.navbarColor);
+        }
+
+        .layout-sidebar-menubar {
+            .el-menu {
+                background-color: v-bind(themeStyle.sidebarBg);
+                border-right: 0;
+            }
+
+            .el-menu--horizontal {
+                & > .el-menu-item {
+                    color: v-bind(themeStyle.sidebarColor);
+                }
+
+                & > .el-sub-menu .el-sub-menu__title {
+                    color: v-bind(themeStyle.sidebarColor);
+                }
+
+                .el-menu-item:not(.is-disabled):focus,
+                .el-menu-item:not(.is-disabled):hover {
+                    background-color: v-bind(themeStyle.sidebarActiveBg);
+                    color: v-bind(themeStyle.sidebarActiveColor);
+                }
+
+                & > .el-sub-menu .el-sub-menu__title:hover {
+                    background-color: v-bind(themeStyle.sidebarActiveBg);
+                    color: v-bind(themeStyle.sidebarActiveColor);
+                }
+
+                & > .el-menu-item-group__title {
+                    padding: 0;
+                }
+
+                & > .el-menu-item.is-active {
+                    background-color: v-bind(themeStyle.sidebarActiveBg);
+                    color: v-bind(themeStyle.sidebarActiveColor) !important;
+                    border-right: 3px solid v-bind(themeStyle.sidebarActiveBorderRightBg);
+                }
+
+                & > .el-sub-menu.is-active > .el-sub-menu__title,
+                & > .el-sub-menu.is-active > .el-sub-menu__title > i {
+                    color: v-bind(themeStyle.sidebarActiveColor);
+                }
+            }
+        }
+    }
+
+    .layout-main-tags {
+        background-color: v-bind(themeStyle.tagsbg);
+        color: v-bind(themeStyle.tagsColor);
+
+        .layout-tags-active {
+            background-color: v-bind(themeStyle.tagsActiveBg);
+            color: v-bind(themeStyle.tagsActiveColor);
+        }
+    }
+
+    .layout-main-content {
+        background-color: v-bind(themeStyle.mainBg);
+    }
+    
+    .el-popper{
+        .el-menu-item-group__title {
+            padding: 0;
+        }
+    }
 </style>

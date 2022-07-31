@@ -4,3 +4,4 @@
 .idea/
 **/dist/
 dbapi-controller/src/main/resources/static/
+package-lock.json

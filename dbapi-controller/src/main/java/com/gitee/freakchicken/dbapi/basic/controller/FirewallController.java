@@ -17,13 +17,13 @@ public class FirewallController {
     IPService ipService;
 
     @RequestMapping("/save")
-    public void save(String status, String mode, String whiteIP, String blackIP) {
+    public void save(String status, String mode, String ips) {
         if (status.equals("on")) {
             if (mode.equals("white")) {
-                ipService.on(mode, whiteIP);
+                ipService.on(mode, ips);
 
             } else if (mode.equals("black")) {
-                ipService.on(mode, blackIP);
+                ipService.on(mode, ips);
             }
         } else if (status.equals("off")) {
             ipService.off();

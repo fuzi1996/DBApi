@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,22 +33,27 @@ public class TableController {
     @RequestMapping("/getAllTables")
     public List<JSONObject> getAllTables(String sourceId) throws SQLException {
         DataSource dataSource = dataSourceMapper.selectById(sourceId);
-        DruidPooledConnection connection = PoolManager.getPooledConnection(dataSource);
-        List<String> tables = JdbcUtil.getAllTables(connection, dataSource.getTableSql());
-        List<JSONObject> list = tables.stream().map(t -> {
-            JSONObject jo = new JSONObject();
-            jo.put("label", t);
-            try {
-                DruidPooledConnection conn = PoolManager.getPooledConnection(dataSource);
-                jo.put("columns", JdbcUtil.getRDBMSColumnProperties(conn, dataSource.getType(), t));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            DruidPooledConnection connection = PoolManager.getPooledConnection(dataSource);
+            List<String> tables = JdbcUtil.getAllTables(connection, dataSource.getTableSql());
+            List<JSONObject> list = tables.stream().map(t -> {
+                JSONObject jo = new JSONObject();
+                jo.put("label", t);
+                try {
+                    DruidPooledConnection conn = PoolManager.getPooledConnection(dataSource);
+                    jo.put("columns", JdbcUtil.getRDBMSColumnProperties(conn, dataSource.getType(), t));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 //            jo.put("columns",);
-            jo.put("showColumns", false);
-            return jo;
-        }).collect(Collectors.toList());
-        return list;
+                jo.put("showColumns", false);
+                return jo;
+            }).collect(Collectors.toList());
+            return list;
+        }catch (Exception e){
+            log.error("获取数据源[{}]的所有表信息失败",sourceId,e);
+            return Collections.EMPTY_LIST;
+        }
     }
 
     @RequestMapping("/getAllColumns")

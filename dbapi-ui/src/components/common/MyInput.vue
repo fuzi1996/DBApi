@@ -1,21 +1,21 @@
 <template>
-  <div class="form">
-    <span class="label">{{ (nullable ? '' : '*') + label }}</span>
-    <div class="preffix" v-if="preffix != ''">{{ preffix }}</div>
-    <input class="input" :value="value" @input="handleInput" :style="'width: ' + width" :placeholder="placeholder"/>
+  <div class='form'>
+    <span class='label'>{{ (nullable ? '' : '*') + label }}</span>
+    <div v-if='preffix !=""' class='preffix'>{{ preffix }}</div>
+    <input class='input' :value='value' :style='"width:" + width' :placeholder='placeholder' @input='handleInput'>
   </div>
 </template>
 <script>
 export default {
-  name: "myInput",
+  name: 'MyInput',
   props: {
     value: {
       type: String | Number,
-      default: "",
+      default: ''
     },
     label: {
       type: String,
-      default: "",
+      default: ''
     },
     nullable: {
       type: Boolean,
@@ -32,14 +32,14 @@ export default {
     placeholder: {
       type: String,
       default: ''
-    },
+    }
   },
   methods: {
     handleInput(e) {
-      this.$emit("input", e.target.value);
-    },
-  },
-};
+      this.$emit('input', e.target.value)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

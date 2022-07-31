@@ -48,7 +48,16 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             }
 
             // 获取 token 中的 userId
-            String userId = JwtUtils.getAudience(token);
+            String userId = null;
+            try {
+                userId = JwtUtils.getAudience(token);
+            }catch (Exception e){
+                log.error("从token[{}]中获取userid失败",token,e);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                writer = response.getWriter();
+                writer.append("用户不存在，请重新登录");
+                return false;
+            }
 
             User user = userService.getUserById(Integer.valueOf(userId));
             if (user == null) {
@@ -70,7 +79,10 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("jwt token校验无效",e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            writer = response.getWriter();
+            writer.append("token无效，请重新登录");
             return false;
         } finally {
             if (writer != null) {

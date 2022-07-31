@@ -1,33 +1,33 @@
 <template>
-  <div v-show="active">
-    <slot></slot>
+  <div v-show='active'>
+    <slot />
   </div>
 </template>
 <script>
 export default {
-  name: "mytabPane",
-  data() {
-    return {
-      flag: false,
-    };
-  },
+  name: 'MytabPane',
   props: {
     label: {
       type: String,
-      default: null,
+      default: null
     },
     value: {
       type: String,
-      default: null,
-    },
+      default: null
+    }
+  },
+  data() {
+    return {
+      flag: false
+    }
   },
   computed: {
     active() {
-      const active = this.$parent.currentName === this.label;
-      return active;
-    },
-  },
-};
+      const active = this.$parent.currentName === this.label
+      return active
+    }
+  }
+}
 </script>
 <style scoped>
 </style>

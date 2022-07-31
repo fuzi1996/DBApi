@@ -1,24 +1,29 @@
 <template>
-  <div style="display: inline-block">
-    <i class="iconfont icon-my-SQL db" v-if="type == 'mysql'"></i>
-    <i class="iconfont icon-postgresql db" v-if="type == 'postgresql'"></i>
-    <i class="iconfont icon-hive db" v-if="type == 'hive'"></i>
-    <i class="iconfont icon-SQLServer db" v-if="type == 'sqlserver'"></i>
-    <i class="iconfont icon-clickhouse2 db" v-if="type == 'clickhouse'"></i>
-    <i class="iconfont icon-Kylin db" v-if="type == 'kylin'"></i>
-    <i class="iconfont icon-oracle db" v-if="type == 'oracle'"></i>
-    <i class="iconfont icon-TDengine db" v-if="type == 'TDengine'"></i>
-    <i class="iconfont icon-doris db" v-if="type == 'doris'"></i>
-    <i class="iconfont icon-oceanbase db" v-if="type == 'oceanbase'"></i>
-    <i class="iconfont icon-GreenPlum db" v-if="type == 'greenplum'"></i>
-    <i class="iconfont icon-OTHER db" v-if="type == 'others'"></i>
+  <div style='display: inline-block'>
+    <i v-if='type =="mysql"' class='iconfont icon-my-SQL db' />
+    <i v-if='type =="postgresql"' class='iconfont icon-postgresql db' />
+    <i v-if='type =="hive"' class='iconfont icon-hive db' />
+    <i v-if='type =="sqlserver"' class='iconfont icon-SQLServer db' />
+    <i v-if='type =="clickhouse"' class='iconfont icon-clickhouse2 db' />
+    <i v-if='type =="kylin"' class='iconfont icon-Kylin db' />
+    <i v-if='type =="oracle"' class='iconfont icon-oracle db' />
+    <i v-if='type =="TDengine"' class='iconfont icon-TDengine db' />
+    <i v-if='type =="doris"' class='iconfont icon-doris db' />
+    <i v-if='type =="oceanbase"' class='iconfont icon-oceanbase db' />
+    <i v-if='type =="greenplum"' class='iconfont icon-GreenPlum db' />
+    <i v-if='type =="others"' class='iconfont icon-OTHER db' />
   </div>
 </template>
 
 <script>
 export default {
-  name: "dbIcon",
-  props:['type']
+  name: 'DbIcon',
+  props:{
+    type:{
+      type:String,
+      default: ''
+    }
+  }
 }
 </script>
 

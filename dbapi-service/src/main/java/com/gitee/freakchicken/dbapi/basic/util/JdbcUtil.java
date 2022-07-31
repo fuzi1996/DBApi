@@ -93,7 +93,7 @@ public class JdbcUtil {
 
                 String columnTypeName = rsd.getColumnTypeName(i + 1);
                 jsonObject.put("fieldTypeName", columnTypeName);//数据库字段类型名
-                jsonObject.put("TypeName", columnTypeName);
+                jsonObject.put("typeName", columnTypeName);
                 jsonObject.put("fieldJavaTypeName", rsd.getColumnClassName(i + 1));//映射到java的类型名
                 String columnName = rsd.getColumnName(i + 1);
                 if (columnName.contains("."))
