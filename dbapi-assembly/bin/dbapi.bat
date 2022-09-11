@@ -1,25 +1,29 @@
 @echo off
 
-rem ---------------------------------------------------------------------------
-rem Start script for the DBApi
-rem ---------------------------------------------------------------------------
+@REM ---------------------------------------------------------------------------
+@REM Start script for the DBApi
+@REM usage: dbapi.bat [-rebuild:if libs change]
+@REM ---------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
 
-rem get CURRENT_DIR
+@REM get CURRENT_DIR
 set CURRENT_DIR=%~dp0
 
 cd "%CURRENT_DIR%.."
 
-rem set param
+@REM set param
 set DBAPI_HOME=%cd%
 set DBAPI_CONF_HOME=file:/%DBAPI_HOME%\conf\
 set DBAPI_LIB_HOME=%DBAPI_HOME%\lib
 set DBAPI_MAIN_CLASS=com.gitee.freakchicken.dbapi.DBApiStandalone
-set DBAPI_MANIFEST_FILE_PARENT_PATH=%DBAPI_HOME%\META-INF
+set DBAPI_TEMP_PATH=%temp%\dbapi
+set DBAPI_MANIFEST_FILE_PARENT_PATH=%DBAPI_TEMP_PATH%\META-INF
 set DBAPI_MANIFEST_FILE_PATH=%DBAPI_MANIFEST_FILE_PARENT_PATH%\MANIFEST.MF
-
+set DBAPI_START_JAR_PATH=%DBAPI_TEMP_PATH%\DBApi-start.jar
 set DBAPI_EXCLUDE_JAR_NAMES=spring-boot-starter-webflux;spring-webflux;spring-cloud-gateway-server;spring-cloud-starter-gateway
+set DBAPI_RE_BUILD_START_JAR_FLAG=%1
+
 
 if not exist %DBAPI_MANIFEST_FILE_PARENT_PATH% md %DBAPI_MANIFEST_FILE_PARENT_PATH%
 
@@ -27,6 +31,18 @@ if not exist %DBAPI_MANIFEST_FILE_PARENT_PATH% md %DBAPI_MANIFEST_FILE_PARENT_PA
 @REM   del /f /q %DBAPI_MANIFEST_FILE_PATH%
 @REM )
 
+if exist %DBAPI_START_JAR_PATH% (
+  if "%DBAPI_RE_BUILD_START_JAR_FLAG%"=="-rebuild" (
+    call:rebuild_start_jar
+  )
+) else (
+  call:rebuild_start_jar
+)
+
+java -jar %DBAPI_START_JAR_PATH%
+
+:rebuild_start_jar
+SETLOCAL
 @REM set "DBAPI_JAR_PATH=%DBAPI_CONF_HOME%"
 echo Manifest-Version: 1.0 > %DBAPI_MANIFEST_FILE_PATH%
 echo Created-By: DBApi >> %DBAPI_MANIFEST_FILE_PATH%
@@ -46,7 +62,9 @@ for /R %DBAPI_LIB_HOME% %%f in (*.jar) do (
   )
 )
 
-jar -cvfm temp.jar %DBAPI_MANIFEST_FILE_PATH%
+jar -cvfm %DBAPI_START_JAR_PATH% %DBAPI_MANIFEST_FILE_PATH%
+ENDLOCAL
+goto:eof
 
 :exclude_jar
 SETLOCAL
