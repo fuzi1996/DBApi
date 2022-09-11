@@ -5,17 +5,19 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @TableName(value = "api_auth")
 public class ApiAuth {
 
     @TableId(value = "id", type = IdType.AUTO)
-    Integer id;
+    private Integer id;
 
     @TableField("app_id")
-    String appId;
+    private String appId;
 
     @TableField("group_id")
-    String groupId;
+    private String groupId;
 }

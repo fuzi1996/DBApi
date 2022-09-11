@@ -4,26 +4,26 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.gitee.freakchicken.dbapi.basic.service.*;
-
-import com.gitee.freakchicken.dbapi.basic.util.PoolManager;
-import com.gitee.freakchicken.dbapi.basic.util.ThreadUtils;
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
-import com.gitee.freakchicken.dbapi.common.ApiSql;
-import com.gitee.freakchicken.dbapi.common.ResponseDto;
 import com.gitee.freakchicken.dbapi.basic.domain.DataSource;
+import com.gitee.freakchicken.dbapi.basic.service.IApiConfigService;
+import com.gitee.freakchicken.dbapi.basic.service.IApiService;
+import com.gitee.freakchicken.dbapi.basic.service.IDataSourceService;
+import com.gitee.freakchicken.dbapi.basic.service.IPService;
+import com.gitee.freakchicken.dbapi.basic.util.JdbcUtil;
+import com.gitee.freakchicken.dbapi.basic.util.PoolManager;
+import com.gitee.freakchicken.dbapi.basic.util.SqlEngineUtil;
+import com.gitee.freakchicken.dbapi.basic.util.ThreadUtils;
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
+import com.gitee.freakchicken.dbapi.domain.ApiSql;
+import com.gitee.freakchicken.dbapi.dto.ResponseDTO;
 import com.gitee.freakchicken.dbapi.plugin.AlarmPlugin;
 import com.gitee.freakchicken.dbapi.plugin.CachePlugin;
 import com.gitee.freakchicken.dbapi.plugin.PluginManager;
 import com.gitee.freakchicken.dbapi.plugin.TransformPlugin;
-
-import com.gitee.freakchicken.dbapi.basic.util.JdbcUtil;
-import com.gitee.freakchicken.dbapi.basic.util.SqlEngineUtil;
+import com.gitee.freakchicken.dbapi.util.CloseUtil;
 import com.github.freakchick.orange.SqlMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.entity.ContentType;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -36,32 +36,27 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 @Slf4j
 @Component
 public class APIServlet extends HttpServlet {
 
     @Autowired
-    ApiConfigService apiConfigService;
+    private IApiConfigService IApiConfigService;
     @Autowired
-    DataSourceService dataSourceService;
+    private IDataSourceService IDataSourceService;
     @Autowired
-    ApiService apiService;
+    private IApiService IApiService;
 
     @Autowired
-    IPService ipService;
-//    @Autowired
-//    MailService mailService;
+    private IPService ipService;
 
     @Value("${dbapi.api.context}")
-    String apiContext;
+    private String apiContext;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -69,19 +64,17 @@ public class APIServlet extends HttpServlet {
         String servletPath = request.getRequestURI();
         servletPath = servletPath.substring(apiContext.length() + 2);
 
-        PrintWriter out = null;
         try {
-            out = response.getWriter();
-            ResponseDto responseDto = process(servletPath, request, response);
-            out.append(JSON.toJSONString(responseDto));
-
+            ResponseDTO responseDto = process(servletPath, request, response);
+            response.getWriter().append(JSON.toJSONString(responseDto));
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.append(JSON.toJSONString(ResponseDto.fail(e.toString())));
+            response.getWriter().append(JSON.toJSONString(ResponseDTO.fail(e.toString())));
             log.error(e.toString(), e);
         } finally {
-            if (out != null)
-                out.close();
+            if (response.getWriter() != null) {
+                response.getWriter().close();
+            }
         }
     }
 
@@ -91,20 +84,20 @@ public class APIServlet extends HttpServlet {
         doGet(req, resp);
     }
 
-    public ResponseDto process(String path, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseDTO process(String path, HttpServletRequest request, HttpServletResponse response) {
 
-//            // 校验接口是否存在
-        ApiConfig config = apiConfigService.getConfig(path);
+        // 校验接口是否存在
+        ApiConfig config = IApiConfigService.getConfig(path);
         if (config == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return ResponseDto.fail("Api not exists");
+            return ResponseDTO.fail("Api not exists");
         }
 
         try {
-            DataSource datasource = dataSourceService.detail(config.getDatasourceId());
+            DataSource datasource = IDataSourceService.detail(config.getDatasourceId());
             if (datasource == null) {
                 response.setStatus(500);
-                return ResponseDto.fail("Datasource not exists!");
+                return ResponseDTO.fail("Datasource not exists!");
             }
 
             Map<String, Object> sqlParam = getParams(request, config);
@@ -114,14 +107,14 @@ public class APIServlet extends HttpServlet {
                 CachePlugin cachePlugin = PluginManager.getCachePlugin(config.getCachePlugin());
                 Object o = cachePlugin.get(config, sqlParam);
                 if (o != null) {
-                    return ResponseDto.apiSuccess(o); //如果缓存有数据直接返回
+                    return ResponseDTO.successWithData(o); //如果缓存有数据直接返回
                 }
             }
 
             List<ApiSql> sqlList = config.getSqlList();
             DruidPooledConnection connection = PoolManager.getPooledConnection(datasource);
             //是否开启事务
-            boolean flag = config.getOpenTrans() == 1 ? true : false;
+            boolean flag = config.getOpenTrans() == 1;
             //执行sql
             List<Object> dataList = executeSql(connection, sqlList, sqlParam, flag);
 
@@ -143,7 +136,7 @@ public class APIServlet extends HttpServlet {
             if (dataList.size() == 1) {
                 res = dataList.get(0);
             }
-            ResponseDto dto = ResponseDto.apiSuccess(res);
+            ResponseDTO<Object> dto = ResponseDTO.successWithData(res);
             //设置缓存
             if (StringUtils.isNoneBlank(config.getCachePlugin())) {
                 CachePlugin cachePlugin = PluginManager.getCachePlugin(config.getCachePlugin());
@@ -173,34 +166,27 @@ public class APIServlet extends HttpServlet {
     public List<Object> executeSql(Connection connection, List<ApiSql> sqlList, Map<String, Object> sqlParam, boolean flag) {
         List<Object> dataList = new ArrayList<>();
         try {
-            if (flag)
-                connection.setAutoCommit(false);
-            else
-                connection.setAutoCommit(true);
+            connection.setAutoCommit(!flag);
             for (ApiSql apiSql : sqlList) {
                 SqlMeta sqlMeta = SqlEngineUtil.getEngine().parse(apiSql.getSqlText(), sqlParam);
                 Object data = JdbcUtil.executeSql(connection, sqlMeta.getSql(), sqlMeta.getJdbcParamValues());
                 dataList.add(data);
             }
-            if (flag)
+            if (flag) {
                 connection.commit();
+            }
             return dataList;
         } catch (Exception e) {
             try {
-                if (flag)
+                if (flag) {
                     connection.rollback();
+                }
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                log.warn("事务回滚失败", ex);
             }
             throw new RuntimeException(e);
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            CloseUtil.safeClose(connection);
         }
     }
 
@@ -225,13 +211,17 @@ public class APIServlet extends HttpServlet {
         //如果是application/json请求，不管接口规定的content-type是什么，接口都可以访问，且请求参数都以json body 为准
         if (contentType.equalsIgnoreCase(MediaType.APPLICATION_JSON_VALUE)) {
             JSONObject jo = getHttpJsonBody(request);
-            params = JSONObject.parseObject(jo.toJSONString(), new TypeReference<Map<String, Object>>() {
-            });
+            if (Objects.nonNull(jo)) {
+                params = JSONObject.parseObject(jo.toJSONString(), new TypeReference<Map<String, Object>>() {
+                });
+            } else {
+                params = new LinkedHashMap<>();
+            }
         }
         //如果是application/x-www-form-urlencoded请求，先判断接口规定的content-type是不是确实是application/x-www-form-urlencoded
         else if (contentType.equalsIgnoreCase(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
             if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(apiConfig.getContentType())) {
-                params = apiService.getSqlParam(request, apiConfig);
+                params = IApiService.getSqlParam(request, apiConfig);
             } else {
                 throw new RuntimeException("this API only support content-type: " + apiConfig.getContentType() + ", but you use: " + contentType);
             }
@@ -243,21 +233,16 @@ public class APIServlet extends HttpServlet {
     }
 
     private JSONObject getHttpJsonBody(HttpServletRequest request) {
-        try {
-            InputStreamReader in = new InputStreamReader(request.getInputStream(), "utf-8");
-            BufferedReader br = new BufferedReader(in);
+        try (InputStreamReader in = new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(in)) {
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
-            br.close();
-            JSONObject jsonObject = JSON.parseObject(sb.toString());
-            return jsonObject;
+            return JSON.parseObject(sb.toString());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-        } finally {
-
         }
         return null;
     }

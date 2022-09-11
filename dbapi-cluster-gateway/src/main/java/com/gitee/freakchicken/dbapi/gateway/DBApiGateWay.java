@@ -7,7 +7,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
+@EnableCaching
 @SpringBootApplication
+@MapperScan("com.gitee.freakchicken.dbapi.basic.dao")
 @ComponentScan(value = {"com.gitee.freakchicken.dbapi.basic", "com.gitee.freakchicken.dbapi.gateway"},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
@@ -17,14 +19,10 @@ import org.springframework.context.annotation.FilterType;
                         "com.gitee.freakchicken.dbapi.basic.service.LoadPluginOnSpringReady"
                 })
         })
-@MapperScan("com.gitee.freakchicken.dbapi.basic.dao")
-@EnableCaching
-//@PropertySource("classpath:application-gateway.yml")
 public class DBApiGateWay {
     public static void main(String[] args) {
         System.setProperty("spring.profiles.active", "gateway");
         System.setProperty("reactor.netty.http.server.accessLogEnabled","true");
         SpringApplication.run(DBApiGateWay.class, args);
     }
-
 }

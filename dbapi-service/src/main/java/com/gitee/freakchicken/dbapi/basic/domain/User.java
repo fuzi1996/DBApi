@@ -5,17 +5,18 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @TableName(value = "user")
 public class User {
-
     @TableId(value = "id", type = IdType.AUTO)
-    Integer id;
+    private Integer id;
 
     @TableField
-    String username;
+    private String username;
 
     @TableField
-    String password;
+    private String password;
 }

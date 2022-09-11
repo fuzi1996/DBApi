@@ -60,85 +60,85 @@ EMAIL_HOST=smtp.163.com
 > 新建java类实现`com.gitee.freakchicken.dbapi.plugin.CachePlugin`
 
 ```java
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
 import com.gitee.freakchicken.dbapi.plugin.CachePlugin;
 
 import java.util.Map;
 
 public class Cdemo extends CachePlugin {
 
-    /**
-     * 插件名称，用于在页面上显示，提示用户
-     *
-     * @return
-     */
-    @Override
-    public String getName() {
-        return null;
-    }
+		/**
+		 * 插件名称，用于在页面上显示，提示用户
+		 *
+		 * @return
+		 */
+		@Override
+		public String getName() {
+				return null;
+		}
 
-    /**
-     * 插件功能描述，用于在页面上显示，提示用户
-     *
-     * @return
-     */
-    @Override
-    public String getDescription() {
-        return null;
-    }
+		/**
+		 * 插件功能描述，用于在页面上显示，提示用户
+		 *
+		 * @return
+		 */
+		@Override
+		public String getDescription() {
+				return null;
+		}
 
-    /**
-     * 插件参数描述，用于在页面上显示，提示用户
-     *
-     * @return
-     */
-    @Override
-    public String getParamDescription() {
-        return null;
-    }
+		/**
+		 * 插件参数描述，用于在页面上显示，提示用户
+		 *
+		 * @return
+		 */
+		@Override
+		public String getParamDescription() {
+				return null;
+		}
 
-    /**
-     * 插件初始化方法，实例化插件的时候执行，永远只会执行一次，
-     * 一般是用来创建连接池
-     */
-    @Override
-    public void init() {
+		/**
+		 * 插件初始化方法，实例化插件的时候执行，永远只会执行一次，
+		 * 一般是用来创建连接池
+		 */
+		@Override
+		public void init() {
 
-    }
+		}
 
-    /**
-     * 缓存设置
-     *
-     * @param config api配置
-     * @param requestParams request参数
-     * @param data   要缓存的数据
-     */
-    @Override
-    public void set(ApiConfig config, Map<String, Object> requestParams, Object data) {
+		/**
+		 * 缓存设置
+		 *
+		 * @param config api配置
+		 * @param requestParams request参数
+		 * @param data   要缓存的数据
+		 */
+		@Override
+		public void set(ApiConfig config, Map<String, Object> requestParams, Object data) {
 
-    }
+		}
 
-    /**
-     * 清除所有缓存，API修改、删除、下线的时候会触发清除缓存
-     *
-     * @param config api配置
-     */
-    @Override
-    public void clean(ApiConfig config) {
+		/**
+		 * 清除所有缓存，API修改、删除、下线的时候会触发清除缓存
+		 *
+		 * @param config api配置
+		 */
+		@Override
+		public void clean(ApiConfig config) {
 
-    }
+		}
 
-    /**
-     * 查询缓存
-     *
-     * @param config api配置
-     * @param requestParams request参数
-     * @return
-     */
-    @Override
-    public Object get(ApiConfig config, Map<String, Object> requestParams) {
-        return null;
-    }
+		/**
+		 * 查询缓存
+		 *
+		 * @param config api配置
+		 * @param requestParams request参数
+		 * @return
+		 */
+		@Override
+		public Object get(ApiConfig config, Map<String, Object> requestParams) {
+				return null;
+		}
 }
 
 
@@ -158,7 +158,6 @@ public class Cdemo extends CachePlugin {
 
 ```java
 import com.alibaba.fastjson.JSONObject;
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
 import com.gitee.freakchicken.dbapi.plugin.TransformPlugin;
 
 import java.util.List;
@@ -220,62 +219,62 @@ public class Tdemo extends TransformPlugin {
 > 新建java类，实现`com.gitee.freakchicken.dbapi.plugin.AlarmPlugin`
 
 ```java
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
 import com.gitee.freakchicken.dbapi.plugin.AlarmPlugin;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class EmailAlarmPlugin extends AlarmPlugin {
-    /**
-     * 插件初始化方法，实例化插件的时候执行，永远只会执行一次
-     */
-    @Override
-    public void init() {
+		/**
+		 * 插件初始化方法，实例化插件的时候执行，永远只会执行一次
+		 */
+		@Override
+		public void init() {
 
-    }
+		}
 
-    /**
-     * 告警逻辑
-     *
-     * @param e           异常
-     * @param config      API元数据
-     * @param request     请求
-     * @param pluginParam 告警插件局部参数
-     */
-    @Override
-    public void alarm(Exception e, ApiConfig config, HttpServletRequest request, String pluginParam) {
+		/**
+		 * 告警逻辑
+		 *
+		 * @param e           异常
+		 * @param config      API元数据
+		 * @param request     请求
+		 * @param pluginParam 告警插件局部参数
+		 */
+		@Override
+		public void alarm(Exception e, ApiConfig config, HttpServletRequest request, String pluginParam) {
 
-    }
+		}
 
-    /**
-     * 插件名称，用于在页面上显示，提示用户
-     *
-     * @return
-     */
-    @Override
-    public String getName() {
-        return null;
-    }
+		/**
+		 * 插件名称，用于在页面上显示，提示用户
+		 *
+		 * @return
+		 */
+		@Override
+		public String getName() {
+				return null;
+		}
 
-    /**
-     * 插件功能描述，用于在页面上显示，提示用户
-     *
-     * @return
-     */
-    @Override
-    public String getDescription() {
-        return null;
-    }
+		/**
+		 * 插件功能描述，用于在页面上显示，提示用户
+		 *
+		 * @return
+		 */
+		@Override
+		public String getDescription() {
+				return null;
+		}
 
-    /**
-     * 插件参数描述，用于在页面上显示，提示用户
-     *
-     * @return
-     */
-    @Override
-    public String getParamDescription() {
-        return null;
-    }
+		/**
+		 * 插件参数描述，用于在页面上显示，提示用户
+		 *
+		 * @return
+		 */
+		@Override
+		public String getParamDescription() {
+				return null;
+		}
 }
 
 ```
@@ -325,7 +324,7 @@ String ip=PluginConf.getKey("RedisCachePlugin.ip")
 - 代码获取插件局部参数值的方法：
 
 ```java
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
+
 
 // 缓存插件获取局部参数，从ApiConfig获取
 String params=ApiConfig.getCachePluginParams();
@@ -334,7 +333,7 @@ String params=ApiConfig.getCachePluginParams();
 public abstract Object transform(List<JSONObject> data,String params){
 
 // 告警插件获取局部参数，直接就是alarm方法的pluginParam参数
-public void alarm(Exception e, ApiConfig config, HttpServletRequest request, String pluginParam)
+public void alarm(Exception e,ApiConfig config,HttpServletRequest request,String pluginParam)
 ```
 
 ![](https://freakchicken.gitee.io/images/dbApi/20220503/api_edit2.png)

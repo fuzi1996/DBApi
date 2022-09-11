@@ -14,7 +14,7 @@ import java.util.Map;
 public class FirewallController {
 
     @Autowired
-    IPService ipService;
+    private IPService ipService;
 
     @RequestMapping("/save")
     public void save(String status, String mode, String ips) {

@@ -1,7 +1,5 @@
 package com.gitee.freakchicken.dbapi.basic.util;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -10,7 +8,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import java.io.IOException;
-import java.security.*;
+import java.security.SecureRandom;
 
 public class DESUtils {
 
@@ -18,20 +16,6 @@ public class DESUtils {
     private final static String ENCODE = "UTF-8";
 
     private final static String DES_KEY = PropertiesUtil.getKey("dbapi.secret.key");
-
-    public static void main(String[] args) {
-        String pass = "root123456";
-        System.out.println("加密前：    " + pass);
-        try {
-            String encrypt = encrypt(pass);
-            System.err.println("加密后：    " + encrypt);
-            System.err.println("解密后：    " + decrypt(encrypt));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
 
     /**
      * Description 根据键值进行加密
@@ -42,8 +26,7 @@ public class DESUtils {
      */
     public static String encrypt(String data) throws Exception {
         byte[] bt = encrypt(data.getBytes(ENCODE), DES_KEY.getBytes(ENCODE));
-        String strs = new BASE64Encoder().encode(bt);
-        return strs;
+        return new BASE64Encoder().encode(bt);
     }
 
     /**
@@ -55,8 +38,9 @@ public class DESUtils {
      * @throws Exception
      */
     public static String decrypt(String data) throws Exception {
-        if (data == null)
+        if (data == null) {
             return null;
+        }
         BASE64Decoder decoder = new BASE64Decoder();
         byte[] buf = decoder.decodeBuffer(data);
         byte[] bt = decrypt(buf, DES_KEY.getBytes(ENCODE));

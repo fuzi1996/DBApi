@@ -1,26 +1,29 @@
 package com.gitee.freakchicken.dbapi.plugin;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@Slf4j
 public class PluginConf {
 
-    private static Properties p = new Properties();
+    private static final String PLUGIN_PROPERTIES_FILE_NAME = "plugin.properties";
+
+    private static final Properties properties = new Properties();
 
     static {
-
-        InputStream in = PluginConf.class.getClassLoader().getResourceAsStream("plugin.properties");
+        InputStream in = PluginConf.class.getClassLoader().getResourceAsStream(PLUGIN_PROPERTIES_FILE_NAME);
         try {
-            p.load(in);
+            properties.load(in);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("load {} error", PLUGIN_PROPERTIES_FILE_NAME, e);
         }
-
     }
 
     public static String getKey(String key) {
-        return p.getProperty(key);
+        return properties.getProperty(key);
     }
 
 }

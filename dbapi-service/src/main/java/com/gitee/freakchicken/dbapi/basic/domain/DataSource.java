@@ -1,10 +1,10 @@
 package com.gitee.freakchicken.dbapi.basic.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @program: dbApi
@@ -13,46 +13,47 @@ import lombok.Data;
  * @create: 2021-01-20 09:52
  **/
 @Data
+@NoArgsConstructor
 @TableName(value = "datasource")
 public class DataSource {
 
     @TableId(value = "id")
-    String id;
+    private String id;
 
     @TableField
-    String name;
+    private String name;
 
     @TableField
-    String note;
+    private String note;
 
     @TableField
-    String url;
+    private String url;
 
     @TableField
-    String username;
+    private String username;
 
     @TableField
-    String password;
+    private String password;
 
     /**
      * true 修改密码 false不修改
      */
     @TableField(exist = false)
-    boolean edit_password;
+    private boolean edit_password;
 
     @TableField
-    String type;
+    private String type;
 
     @TableField
-    String driver;
+    private String driver;
 
     @TableField(value = "table_sql")
-    String tableSql;
+    private String tableSql;
 
     @TableField(value = "create_time")
-    String createTime;
+    private String createTime;
 
     @TableField(value = "update_time")
-    String updateTime;
+    private String updateTime;
 
 }

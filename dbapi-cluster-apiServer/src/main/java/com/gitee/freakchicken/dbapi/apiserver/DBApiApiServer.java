@@ -8,10 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+@EnableAsync
+@EnableCaching
 @SpringBootApplication
 @MapperScan("com.gitee.freakchicken.dbapi.basic.dao")
-@EnableCaching
-@EnableAsync
 @ComponentScan(value = {"com.gitee.freakchicken.dbapi.basic", "com.gitee.freakchicken.dbapi.apiserver"},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
@@ -20,7 +20,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
                         "com.gitee.freakchicken.dbapi.basic.controller.*"  //安装包启动的时候排除controller相关
                 })
         })
-//@PropertySource("application-apiServer.properties")
 public class DBApiApiServer {
     public static void main(String[] args) {
         System.setProperty("spring.profiles.active", "apiServer");

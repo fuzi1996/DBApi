@@ -1,6 +1,6 @@
 package com.gitee.freakchicken.dbapi.plugin.impl;
 
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
 import com.gitee.freakchicken.dbapi.plugin.AlarmPlugin;
 import com.gitee.freakchicken.dbapi.plugin.PluginConf;
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -44,7 +44,7 @@ public class EmailAlarmPlugin extends AlarmPlugin {
             Email email = new SimpleEmail();
             email.setHostName(this.host);
 
-//        email.setSmtpPort(465);
+            // email.setSmtpPort(465);
             email.setAuthenticator(new DefaultAuthenticator(this.username, this.password));
             email.setSSLOnConnect(true);
             email.setCharset("UTF-8");

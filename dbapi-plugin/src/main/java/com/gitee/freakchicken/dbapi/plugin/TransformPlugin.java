@@ -1,7 +1,6 @@
 package com.gitee.freakchicken.dbapi.plugin;
 
 import com.alibaba.fastjson.JSONObject;
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

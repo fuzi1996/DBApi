@@ -53,7 +53,7 @@ public class JwtUtils {
         try {
             audience = JWT.decode(token).getAudience().get(0);
         } catch (JWTDecodeException j) {
-
+            // IGNORE
         }
         return audience;
     }

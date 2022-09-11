@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class IPRuleCache {
-
     //缓存到内存中
     public static String status = "off";
     public static String mode = "black";

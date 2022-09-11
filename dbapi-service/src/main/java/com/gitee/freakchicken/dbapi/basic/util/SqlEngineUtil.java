@@ -4,7 +4,6 @@ import com.github.freakchick.orange.engine.DynamicSqlEngine;
 
 /**
  * @program: dbApi
- * @description:
  * @author: jiangqiang
  * @create: 2021-02-24 10:02
  **/

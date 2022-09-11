@@ -1,23 +1,23 @@
 package com.gitee.freakchicken.dbapi.gateway.controller;
 
 import com.gitee.freakchicken.dbapi.basic.service.IPService;
-import com.gitee.freakchicken.dbapi.common.ResponseDto;
+import com.gitee.freakchicken.dbapi.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/metacache")
-@Slf4j
 public class MetaCacheController {
 
     @Autowired
-    IPService ipService;
+    private IPService ipService;
 
     @RequestMapping("/iprule/sync")
-    public ResponseDto hello(){
+    public ResponseDTO hello(){
         ipService.init();
-        return ResponseDto.successWithData(null);
+        return ResponseDTO.successWithData(null);
     }
 }

@@ -3,9 +3,7 @@ package com.gitee.freakchicken.dbapi.basic.filter;
 import com.alibaba.fastjson.JSON;
 import com.gitee.freakchicken.dbapi.basic.service.IPService;
 import com.gitee.freakchicken.dbapi.basic.util.IPUtil;
-import com.gitee.freakchicken.dbapi.common.ResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.gitee.freakchicken.dbapi.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,14 +48,14 @@ public class ApiIPFilter implements Filter {
             if (!checkIP) {
                 out = response.getWriter();
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.append(JSON.toJSONString(ResponseDto.fail("Illegal ip (" + originIp + "), access forbidden")));
+                out.append(JSON.toJSONString(ResponseDTO.fail("Illegal ip (" + originIp + "), access forbidden")));
 
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.append(JSON.toJSONString(ResponseDto.fail(e.toString())));
+            out.append(JSON.toJSONString(ResponseDTO.fail(e.toString())));
             log.error(e.toString());
 
         } finally {

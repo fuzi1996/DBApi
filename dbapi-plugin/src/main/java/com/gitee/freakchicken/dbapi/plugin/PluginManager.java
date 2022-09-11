@@ -3,7 +3,10 @@ package com.gitee.freakchicken.dbapi.plugin;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -15,7 +18,6 @@ public class PluginManager {
     private static Map<String, AlarmPlugin> alarmPlugins = new ConcurrentHashMap<>();
 
     public static void loadPlugins() {
-
         ServiceLoader<CachePlugin> serviceLoader = ServiceLoader.load(CachePlugin.class);
         Iterator<CachePlugin> CachePlugins = serviceLoader.iterator();
         while (CachePlugins.hasNext()) {
@@ -81,7 +83,6 @@ public class PluginManager {
     }
 
     public static List<JSONObject> getAllTransformPlugin() {
-//        return transformPlugins.keySet();
         List<JSONObject> collect = transformPlugins.values().stream().map(t -> {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("className", t.getClass().getName());
@@ -94,7 +95,6 @@ public class PluginManager {
     }
 
     public static List<JSONObject> getAllAlarmPlugin() {
-//        return alarmPlugins.keySet();
         List<JSONObject> collect = alarmPlugins.values().stream().map(t -> {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("className", t.getClass().getName());

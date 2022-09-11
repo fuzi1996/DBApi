@@ -4,14 +4,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.gitee.freakchicken.dbapi.basic.domain.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @program: api
@@ -34,7 +29,7 @@ public class PoolManager {
             druidDataSource.setName(ds.getName());
             druidDataSource.setUrl(ds.getUrl());
             druidDataSource.setUsername(ds.getUsername());
-//            druidDataSource.setPassword(ds.getPassword());
+            //druidDataSource.setPassword(ds.getPassword());
             druidDataSource.setDriverClassName(ds.getDriver());
             druidDataSource.setConnectionErrorRetryAttempts(3);       //失败后重连次数
             druidDataSource.setBreakAfterAcquireFailure(true);
@@ -65,7 +60,7 @@ public class PoolManager {
     public static DruidPooledConnection getPooledConnection(DataSource ds) throws SQLException {
         DruidDataSource pool = PoolManager.getJdbcConnectionPool(ds);
         DruidPooledConnection connection = pool.getConnection();
-//        log.info("获取连接成功");
+        //log.info("获取连接成功");
         return connection;
     }
 }

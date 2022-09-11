@@ -1,9 +1,9 @@
 package com.gitee.freakchicken.dbapi.basic.util;
 
-import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.gitee.freakchicken.dbapi.basic.domain.DataSource;
+import com.gitee.freakchicken.dbapi.util.CloseUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -15,8 +15,7 @@ public class JdbcUtil {
 
     public static ResultSet query(String sql, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet;
+        return preparedStatement.executeQuery();
     }
 
     public static Connection getConnection(DataSource ds) throws Exception {
@@ -40,11 +39,8 @@ public class JdbcUtil {
      */
     public static List<String> getAllTables(Connection conn, String sql) {
         List<String> list = new ArrayList<>();
-        PreparedStatement pst = null;
-        try {
-            pst = conn.prepareStatement(sql);
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             ResultSet resultSet = pst.executeQuery();
-
             while (resultSet.next()) {
                 String s = resultSet.getString(1);
                 list.add(s);
@@ -54,14 +50,7 @@ public class JdbcUtil {
             log.error(e.getMessage(), e);
             return null;
         } finally {
-            try {
-                if (pst != null)
-                    pst.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            CloseUtil.safeClose(conn);
         }
     }
 
@@ -75,17 +64,15 @@ public class JdbcUtil {
      */
     public static List<JSONObject> getRDBMSColumnProperties(Connection conn, String type, String table) {
         List<JSONObject> list = new ArrayList<>();
-        PreparedStatement pst = null;
-        try {
-            String sql;
-            switch (type) {
-                case "POSTGRESQL":
-                    sql = "select * from \"" + table + "\" where 1=2";
-                    break;
-                default:
-                    sql = "select * from " + table + " where 1=2";
-            }
-            pst = conn.prepareStatement(sql);
+        String sql;
+        switch (type) {
+            case "POSTGRESQL":
+                sql = "select * from \"" + table + "\" where 1=2";
+                break;
+            default:
+                sql = "select * from " + table + " where 1=2";
+        }
+        try (PreparedStatement pst = conn.prepareStatement(sql);) {
             ResultSetMetaData rsd = pst.executeQuery().getMetaData();
 
             for (int i = 0; i < rsd.getColumnCount(); i++) {
@@ -96,8 +83,9 @@ public class JdbcUtil {
                 jsonObject.put("typeName", columnTypeName);
                 jsonObject.put("fieldJavaTypeName", rsd.getColumnClassName(i + 1));//映射到java的类型名
                 String columnName = rsd.getColumnName(i + 1);
-                if (columnName.contains("."))
+                if (columnName.contains(".")) {
                     columnName = columnName.split("\\.")[1];
+                }
                 jsonObject.put("label", columnName);//表字段
                 list.add(jsonObject);
             }
@@ -106,14 +94,7 @@ public class JdbcUtil {
             log.error(e.getMessage(), e);
             return null;
         } finally {
-            try {
-                if (pst != null)
-                    pst.close();
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            CloseUtil.safeClose(conn);
         }
     }
 
@@ -147,7 +128,7 @@ public class JdbcUtil {
             List<JSONObject> list = new ArrayList<>();
             while (rs.next()) {
                 JSONObject jo = new JSONObject();
-                columns.stream().forEach(t -> {
+                columns.forEach(t -> {
                     try {
                         Object value = rs.getObject(t);
                         jo.put(t, value);

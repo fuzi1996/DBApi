@@ -5,24 +5,26 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @TableName(value = "token")
 public class Token {
 
     @TableId(value = "id", type = IdType.AUTO)
-    Integer id;
+    private Integer id;
 
     @TableField
-    String token;
+    private String token;
 
     @TableField
-    Long expire;
+    private Long expire;
 
     @TableField
-    String note;
+    private String note;
 
     @TableField("create_time")
-    Long createTime;
+    private Long createTime;
 
 }

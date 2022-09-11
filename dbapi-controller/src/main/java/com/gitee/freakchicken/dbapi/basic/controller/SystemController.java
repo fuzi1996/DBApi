@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/system")
 public class SystemController {
     @Value("${version}")
-    String version;
+    private String version;
 
     @RequestMapping("/version")
     public String getVersion() {

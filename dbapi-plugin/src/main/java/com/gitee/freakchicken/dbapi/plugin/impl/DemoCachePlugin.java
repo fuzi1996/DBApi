@@ -1,6 +1,6 @@
 package com.gitee.freakchicken.dbapi.plugin.impl;
 
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
 import com.gitee.freakchicken.dbapi.plugin.CachePlugin;
 
 import java.util.Map;

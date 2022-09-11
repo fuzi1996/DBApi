@@ -1,11 +1,11 @@
 package com.gitee.freakchicken.dbapi.basic.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.gitee.freakchicken.dbapi.basic.domain.Token;
-import com.gitee.freakchicken.dbapi.basic.service.*;
-import com.gitee.freakchicken.dbapi.basic.util.IPUtil;
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
-import com.gitee.freakchicken.dbapi.common.ResponseDto;
+import com.gitee.freakchicken.dbapi.basic.service.IApiConfigService;
+import com.gitee.freakchicken.dbapi.basic.service.IAppService;
+import com.gitee.freakchicken.dbapi.basic.service.IAppTokenService;
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
+import com.gitee.freakchicken.dbapi.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @Slf4j
@@ -24,13 +23,13 @@ import java.util.List;
 public class ApiAuthFilter implements Filter {
 
     @Autowired
-    private ApiConfigService apiConfigService;
+    private IApiConfigService IApiConfigService;
 
     @Autowired
-    private AppTokenService tokenService;
+    private IAppTokenService tokenService;
 
     @Autowired
-    AppService appService;
+    private IAppService IAppService;
 
     @Value("${dbapi.api.context}")
     private String apiContext;
@@ -52,10 +51,10 @@ public class ApiAuthFilter implements Filter {
         // 不使用writer的时候不要提前获取response的writer,否则无法在后续filter中设置编码
         try {
             // 校验接口是否存在
-            ApiConfig config = apiConfigService.getConfig(servletPath);
+            ApiConfig config = IApiConfigService.getConfig(servletPath);
             if (config == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                response.getWriter().append(JSON.toJSONString(ResponseDto.fail("Api not exists")));
+                response.getWriter().append(JSON.toJSONString(ResponseDTO.fail("Api not exists")));
                 return;
             }
             // 如果是私有接口，校验权限
@@ -63,19 +62,19 @@ public class ApiAuthFilter implements Filter {
                 String tokenStr = request.getHeader("Authorization");
                 if (StringUtils.isBlank(tokenStr)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().append(JSON.toJSONString(ResponseDto.fail("No Token!")));
+                    response.getWriter().append(JSON.toJSONString(ResponseDTO.fail("No Token!")));
                     return;
                 } else {
                     String appId = tokenService.verifyToken(tokenStr);
                     if (appId == null) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getWriter().append(JSON.toJSONString(ResponseDto.fail("Token Invalid!")));
+                        response.getWriter().append(JSON.toJSONString(ResponseDTO.fail("Token Invalid!")));
                         return;
                     } else {
-                        List<String> authGroups = appService.getAuthGroups(appId);
+                        List<String> authGroups = IAppService.getAuthGroups(appId);
                         if (!authGroups.contains(config.getGroupId())) {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.getWriter().append(JSON.toJSONString(ResponseDto.fail("Token Invalid!")));
+                            response.getWriter().append(JSON.toJSONString(ResponseDTO.fail("Token Invalid!")));
                             return;
                         }
                     }
@@ -87,7 +86,7 @@ public class ApiAuthFilter implements Filter {
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().append(JSON.toJSONString(ResponseDto.fail(e.toString())));
+            response.getWriter().append(JSON.toJSONString(ResponseDTO.fail(e.toString())));
             log.error(e.getMessage(), e);
 
         } finally {

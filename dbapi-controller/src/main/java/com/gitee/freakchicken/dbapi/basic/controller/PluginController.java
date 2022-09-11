@@ -12,7 +12,6 @@ public class PluginController {
 
     @RequestMapping("/all")
     public JSONObject getAllCachePlugin() {
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("cache", PluginManager.getAllCachePlugin());
         jsonObject.put("transform", PluginManager.getAllTransformPlugin());

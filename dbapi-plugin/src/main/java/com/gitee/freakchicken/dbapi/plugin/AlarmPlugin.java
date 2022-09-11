@@ -1,7 +1,6 @@
 package com.gitee.freakchicken.dbapi.plugin;
 
-import com.gitee.freakchicken.dbapi.common.ApiConfig;
-
+import com.gitee.freakchicken.dbapi.domain.ApiConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,5 +1,7 @@
 package com.gitee.freakchicken.dbapi.basic.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -7,12 +9,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+@Slf4j
 public class IPUtil {
-
-    public static void main(String[] args) {
-        System.out.println("本机IP:" + getIpAddress());
-    }
-
     public static String getIpAddress() {
         try {
             Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -25,19 +23,19 @@ public class IPUtil {
                     Enumeration<InetAddress> addresses = netInterface.getInetAddresses();
                     while (addresses.hasMoreElements()) {
                         ip = addresses.nextElement();
-                        if (ip != null && ip instanceof Inet4Address) {
+                        if (ip instanceof Inet4Address) {
                             return ip.getHostAddress();
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            System.err.println("IP地址获取失败" + e.toString());
+            log.error("IP地址获取失败", e);
         }
         return "";
     }
 
-    public final static String getOriginIp(HttpServletRequest request)
+    public static String getOriginIp(HttpServletRequest request)
             throws IOException {
         // 获取请求主机IP地址,如果通过代理进来，则透过防火墙获取真实IP地址
 

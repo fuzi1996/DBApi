@@ -2,7 +2,7 @@ package com.gitee.freakchicken.dbapi.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.gitee.freakchicken.dbapi.basic.service.IPService;
-import com.gitee.freakchicken.dbapi.common.ResponseDto;
+import com.gitee.freakchicken.dbapi.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@Component
 @Slf4j
+@Component
 public class GatewayIPFilter implements GlobalFilter, Ordered {
 
     @Autowired
-    IPService ipService;
+    private IPService ipService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -31,8 +31,8 @@ public class GatewayIPFilter implements GlobalFilter, Ordered {
         String clientIp = request.getRemoteAddress().getHostString();
         if (!ipService.checkIP(clientIp)) {
             log.info("ip forbidden : {}", clientIp);
-//            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            String data = JSON.toJSONString(ResponseDto.fail("Illegal ip (" + clientIp + "), access forbidden"));
+            // response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            String data = JSON.toJSONString(ResponseDTO.fail("Illegal ip (" + clientIp + "), access forbidden"));
             DataBuffer wrap = response.bufferFactory().wrap(data.getBytes());
             return response.writeWith(Mono.just(wrap));
         }
