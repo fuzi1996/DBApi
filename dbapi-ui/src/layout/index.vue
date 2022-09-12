@@ -23,7 +23,7 @@
         <span
           v-if='getMenubar.status === 0 || getMenubar.status === 2'
           class='pl-2'
-        >hsianglee</span>
+        >DBApi</span>
       </div>
       <div class='layout-sidebar-menubar flex flex-1 overflow-hidden'>
         <el-scrollbar wrap-class='scrollbar-wrapper'>

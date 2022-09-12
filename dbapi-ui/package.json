@@ -27,7 +27,7 @@
     "vue-i18n": "^9.1.10"
   },
   "license": "MIT",
-  "repository": "https://github.com/hsiangleev/dbapi",
+  "repository": "https://github.com/freakchick/DBApi",
   "devDependencies": {
     "@babel/preset-env": "^7.12.11",
     "@element-plus/icons-vue": "^0.2.7",
