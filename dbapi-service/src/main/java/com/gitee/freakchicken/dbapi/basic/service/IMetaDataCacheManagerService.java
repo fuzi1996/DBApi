@@ -1,6 +1,6 @@
 package com.gitee.freakchicken.dbapi.basic.service;
 
-public interface IMetaDataCacheManager {
+public interface IMetaDataCacheManagerService {
 
     void cleanApiMetaCacheIfCluster(String key);
 

@@ -5,7 +5,7 @@ import com.gitee.freakchicken.dbapi.basic.domain.AppInfo;
 import com.gitee.freakchicken.dbapi.basic.mapper.ApiAuthMapper;
 import com.gitee.freakchicken.dbapi.basic.mapper.AppInfoMapper;
 import com.gitee.freakchicken.dbapi.basic.service.IAppService;
-import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManager;
+import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManagerService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class AppServiceImpl implements IAppService {
 		private ApiAuthMapper apiAuthMapper;
 
 		@Autowired
-		private IMetaDataCacheManager iMetaDataCacheManager;
+		private IMetaDataCacheManagerService iMetaDataCacheManagerService;
 
 		@Override
 		@Transactional(rollbackFor = Exception.class)
@@ -76,7 +76,7 @@ public class AppServiceImpl implements IAppService {
 								apiAuthMapper.insert(auth);
 						});
 				}
-				iMetaDataCacheManager.cleanTokenAuthMetaCacheIfCluster(appId);
+				iMetaDataCacheManagerService.cleanTokenAuthMetaCacheIfCluster(appId);
 		}
 
 		@Override

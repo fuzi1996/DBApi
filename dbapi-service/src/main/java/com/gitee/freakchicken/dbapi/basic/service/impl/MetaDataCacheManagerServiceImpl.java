@@ -1,6 +1,6 @@
 package com.gitee.freakchicken.dbapi.basic.service.impl;
 
-import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManager;
+import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManagerService;
 import com.gitee.freakchicken.dbapi.constant.ModeConstant;
 import com.gitee.freakchicken.dbapi.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class MetaDataCacheManagerImpl implements IMetaDataCacheManager {
+public class MetaDataCacheManagerServiceImpl implements IMetaDataCacheManagerService {
 
     @Value("${dbapi.cluster.api.name}")
     private String apiName;

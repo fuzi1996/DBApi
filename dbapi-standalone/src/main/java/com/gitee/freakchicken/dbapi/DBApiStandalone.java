@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @EnableCaching
 @SpringBootApplication
-@MapperScan("com.gitee.freakchicken.dbapi.basic.dao")
+@MapperScan("com.gitee.freakchicken.dbapi.basic.mapper")
 @ComponentScan(value = {"com.gitee.freakchicken.dbapi.basic", "com.gitee.freakchicken.dbapi.conf"})
 public class DBApiStandalone {
     public static void main(String[] args) {

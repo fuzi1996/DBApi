@@ -57,16 +57,17 @@
           prefix-icon='el-icon-lock'
           placeholder='请输入密码'
           style='width: 80%;'
-          :type='[flag?"text":"password"]'
+          :type='flag?"text":"password"'
           :disabled='!detail.edit_password'
         >
-          <i
-            slot='suffix'
-            :class='[flag?"el-icon-minus":"el-icon-view"]'
-            style='margin-top:8px;font-size:18px;'
-            autocomplete='auto'
-            @click='flag=!flag'
-          />
+          <template #suffix>
+            <i
+              :class='[flag?"el-icon-minus":"el-icon-view"]'
+              style='margin-top:8px;font-size:18px;'
+              autocomplete='auto'
+              @click='flag=!flag'
+            />
+          </template>
         </el-input>
         <div class='edit-password'>
           {{ $t("m.edit_password") }}: 

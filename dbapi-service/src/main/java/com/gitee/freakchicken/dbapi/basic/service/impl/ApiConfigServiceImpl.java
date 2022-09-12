@@ -10,6 +10,7 @@ import com.gitee.freakchicken.dbapi.basic.mapper.ApiConfigMapper;
 import com.gitee.freakchicken.dbapi.basic.mapper.ApiSqlMapper;
 import com.gitee.freakchicken.dbapi.basic.mapper.DataSourceMapper;
 import com.gitee.freakchicken.dbapi.basic.service.IApiConfigService;
+import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManagerService;
 import com.gitee.freakchicken.dbapi.basic.util.UUIDUtil;
 import com.gitee.freakchicken.dbapi.domain.ApiConfig;
 import com.gitee.freakchicken.dbapi.domain.ApiSql;
@@ -51,7 +52,7 @@ public class ApiConfigServiceImpl implements IApiConfigService {
     private CacheManager cacheManager;
 
     @Autowired
-    private com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManager IMetaDataCacheManager;
+    private IMetaDataCacheManagerService IMetaDataCacheManagerService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -143,7 +144,7 @@ public class ApiConfigServiceImpl implements IApiConfigService {
 
             cacheManager.getCache("api").evictIfPresent(apiConfig.getPath());
             //如果是集群模式，清除每个apiServer节点内的元数据ehcache缓存
-            IMetaDataCacheManager.cleanApiMetaCacheIfCluster(apiConfig.getPath());
+            IMetaDataCacheManagerService.cleanApiMetaCacheIfCluster(apiConfig.getPath());
 
             return ResponseDTO.successWithMsg("update API success");
         }
@@ -171,7 +172,7 @@ public class ApiConfigServiceImpl implements IApiConfigService {
         }
         cacheManager.getCache("api").evictIfPresent(oldConfig.getPath());
         //如果是集群模式，清除每个apiServer节点内的元数据ehcache缓存
-        IMetaDataCacheManager.cleanApiMetaCacheIfCluster(oldConfig.getPath());
+        IMetaDataCacheManagerService.cleanApiMetaCacheIfCluster(oldConfig.getPath());
     }
 
     @Override
@@ -270,7 +271,7 @@ public class ApiConfigServiceImpl implements IApiConfigService {
         }
 
         //如果是集群模式，清除每个apiServer节点内的元数据ehcache缓存
-        IMetaDataCacheManager.cleanApiMetaCacheIfCluster(path);
+        IMetaDataCacheManagerService.cleanApiMetaCacheIfCluster(path);
     }
 
     @Override

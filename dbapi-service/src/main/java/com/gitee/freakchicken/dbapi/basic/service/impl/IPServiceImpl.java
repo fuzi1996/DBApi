@@ -1,7 +1,7 @@
 package com.gitee.freakchicken.dbapi.basic.service.impl;
 
 import com.gitee.freakchicken.dbapi.basic.mapper.IPMapper;
-import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManager;
+import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManagerService;
 import com.gitee.freakchicken.dbapi.basic.service.IPService;
 import com.gitee.freakchicken.dbapi.basic.util.IPRuleCache;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,10 @@ import java.util.stream.Collectors;
 @Service
 public class IPServiceImpl implements IPService {
 
-
     @Autowired
     private IPMapper ipMapper;
     @Autowired
-    private IMetaDataCacheManager iMetaDataCacheManager;
+    private IMetaDataCacheManagerService iMetaDataCacheManagerService;
 
     @PostConstruct
     public void init() {
@@ -59,7 +58,7 @@ public class IPServiceImpl implements IPService {
 
         // 设置缓存
         init();
-        iMetaDataCacheManager.gatewayIPRuleCacheSyncIfCluster();
+        iMetaDataCacheManagerService.gatewayIPRuleCacheSyncIfCluster();
 
     }
 
@@ -75,7 +74,7 @@ public class IPServiceImpl implements IPService {
         _off();
         // 设置缓存
         init();
-        iMetaDataCacheManager.gatewayIPRuleCacheSyncIfCluster();
+        iMetaDataCacheManagerService.gatewayIPRuleCacheSyncIfCluster();
     }
 
     @Override

@@ -7,7 +7,11 @@ import { setLocal, getLocal, decode } from '/@/utils/tools'
 import { RouteLocationNormalizedLoaded } from 'vue-router'
 
 const setting = getLocal<ISetting>('setting')
-const { ACCESS_TOKEN } = getLocal<IStatus>('token')
+const token = getLocal<IStatus>('token')
+let ACCESS_TOKEN = ''
+if(token) {
+  ({ ACCESS_TOKEN } = token)
+}
 
 export const useLayoutStore = defineStore({
   id: 'layout',
@@ -76,6 +80,18 @@ export const useLayoutStore = defineStore({
     changeDeviceWidth():void {
       this.menubar.isPhone = document.body.offsetWidth < 768
       this.menubar.status = this.menubar.isPhone ? IMenubarStatus.PHN : IMenubarStatus.PCE
+    },
+    initWorkplace() {
+      const workplaceIndex = this.tags.tagsList.findIndex(item => item.path === '/dashboard/workplace')
+      if(workplaceIndex === -1) {
+        const tagsList:ITagsList = {
+          name: 'Workplace',
+          title: '工作台',
+          path: '/dashboard/workplace',
+          isActive: false
+        }
+        this.tags.tagsList.push(tagsList)
+      }
     },
     // 切换导航，记录打开的导航
     changeTagNavList(cRouter:RouteLocationNormalizedLoaded):void {

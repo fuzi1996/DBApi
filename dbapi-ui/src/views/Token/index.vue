@@ -1,41 +1,101 @@
 <template>
   <div>
     <div class='gap'>
-      <el-button type='primary' plain @click='dialogCreateApp = true'>创建应用</el-button>
+      <el-button
+        type='primary'
+        plain
+        @click='dialogCreateApp = true'
+      >创建应用</el-button>
     </div>
 
-    <el-table :data='tableData' border stripe max-height='700' class='gap'>
-      <el-table-column prop='id' label='appid' />
-      <el-table-column prop='name' label='应用名称' />
-      <el-table-column prop='note' label='描述' />
-      <el-table-column prop='secret' label='secret' />
-      <el-table-column prop='expireDesc' label='token失效时间' />
-      <el-table-column prop='note' :label='$t("m.note")' />
-      <el-table-column :label='$t("m.operation")' width='100px'>
+    <el-table
+      :data='tableData'
+      border
+      stripe
+      max-height='700'
+      class='gap'
+    >
+      <el-table-column
+        prop='id'
+        label='appid'
+      />
+      <el-table-column
+        prop='name'
+        label='应用名称'
+      />
+      <el-table-column
+        prop='note'
+        label='描述'
+      />
+      <el-table-column
+        prop='secret'
+        label='secret'
+      />
+      <el-table-column
+        prop='expireDesc'
+        label='token失效时间'
+      />
+      <el-table-column
+        prop='note'
+        :label='$t("m.note")'
+      />
+      <el-table-column
+        :label='$t("m.operation")'
+        width='100px'
+      >
         <template #default='scope'>
-          <el-button plain size='small' type='warning' circle @click='handleAuth(scope.row.id)'>
+          <el-button
+            plain
+            size='small'
+            type='warning'
+            circle
+            @click='handleAuth(scope.row.id)'
+          >
             <el-icon><Lock /></el-icon>
           </el-button>
-          <el-button plain size='small' type='danger' circle @click='handleDelete(scope.row.id)'>
+          <el-button
+            plain
+            size='small'
+            type='danger'
+            circle
+            @click='handleDelete(scope.row.id)'
+          >
             <el-icon><Delete /></el-icon>
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog v-model='dialogVisible' title='授权该app访问以下分组的API' @open='getAllGroups'>
+    <el-dialog
+      v-model='dialogVisible'
+      title='授权该app访问以下分组的API'
+      @open='getAllGroups'
+    >
       <el-checkbox-group v-model='checkList'>
-        <el-checkbox v-for='item in groups' :key='item.id' :label='item.id'>{{ item.name }}</el-checkbox>
+        <el-checkbox
+          v-for='item in groups'
+          :key='item.id'
+          :label='item.id'
+        >{{ item.name }}</el-checkbox>
       </el-checkbox-group>
-
-      <span slot='footer' class='dialog-footer'>
-        <el-button @click='dialogVisible = false'>{{ $t('m.cancel') }}</el-button>
-        <el-button type='primary' @click='dialogVisible = false;auth()'>{{ $t('m.save') }}</el-button>
-      </span>
+      <template #footer>
+        <span
+          class='dialog-footer'
+        >
+          <el-button @click='dialogVisible = false'>{{ $t('m.cancel') }}</el-button>
+          <el-button
+            type='primary'
+            @click='dialogVisible = false;auth()'
+          >{{ $t('m.save') }}</el-button>
+        </span>
+      </template>
     </el-dialog>
 
 
-    <el-alert type='warning' show-icon>
+    <el-alert
+      type='warning'
+      show-icon
+    >
       <div class='tip' />
       <div><br>
         import requests <br>
@@ -46,13 +106,20 @@
 
     </el-alert>
 
-    <el-dialog v-model='dialogCreateApp' title='创建应用' width='40%'>
+    <el-dialog
+      v-model='dialogCreateApp'
+      title='创建应用'
+      width='40%'
+    >
       <el-form label-width='120px'>
         <el-form-item label='应用名称'>
           <el-input v-model='app.name' />
         </el-form-item>
         <el-form-item label='描述'>
-          <el-input v-model='app.note' type='textarea' />
+          <el-input
+            v-model='app.note'
+            type='textarea'
+          />
         </el-form-item>
         <el-form-item label='token过期时间'>
           <el-radio-group v-model='app.expireDesc'>
@@ -65,10 +132,17 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <span slot='footer' class='dialog-footer'>
-        <el-button @click='dialogCreateApp = false;resetApp()'>取 消</el-button>
-        <el-button type='primary' @click='dialogCreateApp = false;saveApp();'>确 定</el-button>
-      </span>
+      <template #footer>
+        <span
+          class='dialog-footer'
+        >
+          <el-button @click='dialogCreateApp = false;resetApp()'>取 消</el-button>
+          <el-button
+            type='primary'
+            @click='dialogCreateApp = false;saveApp();'
+          >确 定</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>

@@ -1,13 +1,24 @@
 <template>
   <el-scrollbar>
     <router-view v-slot='{ Component }'>
-      <transition name='fade-transform' mode='out-in'>  
+      <transition
+        name='fade-transform'
+        mode='out-in'
+      >  
         <keep-alive :include='setting.showTags ? data.cachedViews : []'>
-          <component :is='Component' :key='key' class='page m-3 relative' />
+          <component
+            :is='Component'
+            :key='key'
+            class='page m-3 relative'
+          />
         </keep-alive>
       </transition>
     </router-view>
-    <el-backtop target='.layout-main-content>.el-scrollbar>.el-scrollbar__wrap' :bottom='15' :right='15'>
+    <el-backtop
+      target='.layout-main-content>.el-scrollbar>.el-scrollbar__wrap'
+      :bottom='15'
+      :right='15'
+    >
       <div><el-icon><el-icon-caret-top /></el-icon></div>
     </el-backtop>
   </el-scrollbar>

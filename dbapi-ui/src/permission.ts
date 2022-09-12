@@ -12,7 +12,7 @@ const defaultRoutePath = '/'
 
 router.beforeEach(async(to, from) => {
   start()
-  const { getStatus, getMenubar, getTags, setToken, logout, concatAllowRoutes, changeTagNavList, addCachedViews, changeNocacheViewStatus } = useLayoutStore()
+  const { getStatus, getMenubar, getTags, setToken, logout, concatAllowRoutes, changeTagNavList,initWorkplace, addCachedViews, changeNocacheViewStatus } = useLayoutStore()
   // 修改页面title
   const reg = new RegExp(/^(.+)(\s\|\s.+)$/)
   const appTitle = import.meta.env.VITE_APP_TITLE
@@ -46,6 +46,7 @@ router.beforeEach(async(to, from) => {
     concatAllowRoutes()
     return to.fullPath
   }
+  initWorkplace()
   changeTagNavList(to) // 切换导航，记录打开的导航(标签页)
 
   // 离开当前页面时是否需要添加当前页面缓存

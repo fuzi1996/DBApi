@@ -4,7 +4,7 @@ import com.gitee.freakchicken.dbapi.basic.domain.DataSource;
 import com.gitee.freakchicken.dbapi.basic.mapper.ApiConfigMapper;
 import com.gitee.freakchicken.dbapi.basic.mapper.DataSourceMapper;
 import com.gitee.freakchicken.dbapi.basic.service.IDataSourceService;
-import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManager;
+import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManagerService;
 import com.gitee.freakchicken.dbapi.basic.util.DESUtils;
 import com.gitee.freakchicken.dbapi.basic.util.PoolManager;
 import com.gitee.freakchicken.dbapi.basic.util.UUIDUtil;
@@ -36,7 +36,7 @@ public class DataSourceServiceImpl implements IDataSourceService {
     private CacheManager cacheManager;
 
     @Autowired
-    private IMetaDataCacheManager iMetaDataCacheManager;
+    private IMetaDataCacheManagerService iMetaDataCacheManagerService;
 
     @Autowired
     private DataSourceMapper dataSourceMapper;
@@ -78,7 +78,7 @@ public class DataSourceServiceImpl implements IDataSourceService {
         cacheManager.getCache("datasource").evictIfPresent(dataSource.getId());
 
         //如果是集群模式，清除每个apiServer节点内的元数据ehcache缓存
-        iMetaDataCacheManager.cleanDatasourceMetaCacheIfCluster(dataSource.getId());
+        iMetaDataCacheManagerService.cleanDatasourceMetaCacheIfCluster(dataSource.getId());
     }
 
     //    @CacheEvict(value = "datasource", key = "#id")
@@ -94,7 +94,7 @@ public class DataSourceServiceImpl implements IDataSourceService {
 
             //如果是集群模式，清除每个apiServer节点内的元数据ehcache缓存
 
-            iMetaDataCacheManager.cleanDatasourceMetaCacheIfCluster(id);
+            iMetaDataCacheManagerService.cleanDatasourceMetaCacheIfCluster(id);
             return ResponseDTO.successWithMsg("delete success");
         } else {
             return ResponseDTO.fail("datasource has been used, can not delete");
