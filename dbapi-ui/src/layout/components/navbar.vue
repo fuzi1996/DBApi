@@ -33,7 +33,7 @@
   >
     <div class='layout-sidebar-logo flex relative shadow-lg w-40 leading-12 items-center'>
       <img
-        class='w-6 h-8'
+        class='w-6 h-8 icon'
         :src='icon'
       >
       <span

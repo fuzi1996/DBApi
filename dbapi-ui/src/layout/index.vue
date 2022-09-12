@@ -17,7 +17,7 @@
     >
       <div class='layout-sidebar-logo flex h-12 relative flex-center shadow-lg'>
         <img
-          class='w-8 h-8'
+          class='w-8 h-8 icon'
           :src='icon'
         >
         <span
@@ -95,16 +95,17 @@ export default defineComponent ({
 </script>
 
 <style lang='postcss' scoped>
-    ::v-deep(.layout-sidebar-sidesetting .el-drawer__header) {
-        margin-bottom: 0;
-    }
+::v-deep(.layout-sidebar-sidesetting .el-drawer__header) {
+    margin-bottom: 0;
+}
 
-    ::v-deep(.el-menu--horizontal>.el-menu-item) {
-        height: 48px;
-    }
+::v-deep(.el-menu--horizontal>.el-menu-item) {
+    height: 48px;
+}
 
-    ::v-deep(.el-menu--horizontal>.el-sub-menu .el-sub-menu__title) {
-        height: 48px;
-        line-height: 48px;
-    }
+::v-deep(.el-menu--horizontal>.el-sub-menu .el-sub-menu__title) {
+    height: 48px;
+    line-height: 48px;
+}
+
 </style>
