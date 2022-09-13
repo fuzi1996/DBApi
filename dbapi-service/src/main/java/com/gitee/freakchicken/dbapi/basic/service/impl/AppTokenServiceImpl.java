@@ -1,22 +1,27 @@
 package com.gitee.freakchicken.dbapi.basic.service.impl;
 
 
+import com.gitee.freakchicken.dbapi.basic.constant.CacheKeyConstant;
 import com.gitee.freakchicken.dbapi.basic.domain.AppInfo;
 import com.gitee.freakchicken.dbapi.basic.domain.AppToken;
 import com.gitee.freakchicken.dbapi.basic.mapper.AppInfoMapper;
 import com.gitee.freakchicken.dbapi.basic.service.IAppTokenService;
+import com.gitee.freakchicken.dbapi.basic.service.ICacheService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
+@Slf4j
 @Service
 public class AppTokenServiceImpl implements IAppTokenService {
 		@Autowired
 		private AppInfoMapper appInfoMapper;
 
 		@Autowired
-		private CacheManager cacheManager;
+		private ICacheService cacheService;
 
 		@Override
 		public AppToken generateToken(String appId, String secret) {
@@ -46,16 +51,16 @@ public class AppTokenServiceImpl implements IAppTokenService {
 						appToken.setAppId(appId);
 
 						//最新token存入缓存
-						cacheManager.getCache("token_app").putIfAbsent(token, appToken);
+						this.cacheService.putIfAbsent(CacheKeyConstant.EHCACHE_TOKEN_APP, token, appToken);
 
 						//clean old token
-						String oldToken = cacheManager.getCache("app_token").get(appId, String.class);
-						if (oldToken != null) {
-								cacheManager.getCache("token_app").evict(oldToken);
+						String oldToken = this.cacheService.get(CacheKeyConstant.EHCACHE_APP_TOKEN, appId, String.class);
+						if (Objects.nonNull(oldToken)) {
+								this.cacheService.evictIfPresent(CacheKeyConstant.EHCACHE_TOKEN_APP, oldToken);
 						}
 
 						//appid和最新token关系记录下来
-						cacheManager.getCache("app_token").putIfAbsent(appId, token);
+						this.cacheService.putIfAbsent(CacheKeyConstant.EHCACHE_APP_TOKEN, appId, token);
 						return appToken;
 				}
 		}
@@ -68,14 +73,14 @@ public class AppTokenServiceImpl implements IAppTokenService {
 		 */
 		@Override
 		public String verifyToken(String token) {
-				AppToken appToken = cacheManager.getCache("token_app").get(token, AppToken.class);
-				if (appToken == null) {
+				AppToken appToken = this.cacheService.get(CacheKeyConstant.EHCACHE_TOKEN_APP, token, AppToken.class);
+				if (Objects.nonNull(appToken)) {
 						return null;
 				} else {
 						Long expireTime = appToken.getExpireTime();
 						// 单次失效
 						if (expireTime == 0) {
-								cacheManager.getCache("token_app").evict(token);
+								this.cacheService.evictIfPresent(CacheKeyConstant.EHCACHE_TOKEN_APP, token);
 								return appToken.getAppId();
 						}
 						// 永久有效
@@ -88,7 +93,8 @@ public class AppTokenServiceImpl implements IAppTokenService {
 										return appToken.getAppId();
 								} else {
 										// token已经过期就清除
-										cacheManager.getCache("token_app").evict(token);
+										this.cacheService.evictIfPresent(CacheKeyConstant.EHCACHE_TOKEN_APP, token);
+										log.error("token [{}] expired!", token);
 										throw new RuntimeException("token expired!");
 								}
 						} else {

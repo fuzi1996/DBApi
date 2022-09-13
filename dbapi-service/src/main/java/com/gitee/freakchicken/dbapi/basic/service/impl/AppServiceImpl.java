@@ -1,16 +1,16 @@
 package com.gitee.freakchicken.dbapi.basic.service.impl;
 
+import com.gitee.freakchicken.dbapi.basic.constant.CacheKeyConstant;
 import com.gitee.freakchicken.dbapi.basic.domain.ApiAuth;
 import com.gitee.freakchicken.dbapi.basic.domain.AppInfo;
 import com.gitee.freakchicken.dbapi.basic.mapper.ApiAuthMapper;
 import com.gitee.freakchicken.dbapi.basic.mapper.AppInfoMapper;
 import com.gitee.freakchicken.dbapi.basic.service.IAppService;
+import com.gitee.freakchicken.dbapi.basic.service.ICacheService;
 import com.gitee.freakchicken.dbapi.basic.service.IMetaDataCacheManagerService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +24,8 @@ public class AppServiceImpl implements IAppService {
 		private AppInfoMapper appInfoMapper;
 		@Autowired
 		private ApiAuthMapper apiAuthMapper;
+		@Autowired
+		private ICacheService cacheService;
 
 		@Autowired
 		private IMetaDataCacheManagerService iMetaDataCacheManagerService;
@@ -60,12 +62,13 @@ public class AppServiceImpl implements IAppService {
 		@Transactional(rollbackFor = Exception.class)
 		public void delete(String appid) {
 				appInfoMapper.deleteById(appid);
+				cacheService.evictIfPresent(CacheKeyConstant.EHCACHE_APP_AUTH_GROUPS, appid);
 		}
 
 		@Override
 		@Transactional(rollbackFor = Exception.class)
-		@CacheEvict(value = "app_AuthGroups", key = "#appId")
 		public void auth(String appId, String groupIds) {
+				cacheService.evictIfPresent(CacheKeyConstant.EHCACHE_APP_AUTH_GROUPS, appId);
 				apiAuthMapper.deleteByAppId(appId);
 				if (StringUtils.isNoneBlank(groupIds)) {
 						String[] split = groupIds.split(",");
@@ -80,9 +83,9 @@ public class AppServiceImpl implements IAppService {
 		}
 
 		@Override
-		@Cacheable(value = "app_AuthGroups", key = "#appId", unless = "#result == null")
 		public List<String> getAuthGroups(String appId) {
 				List<String> list = apiAuthMapper.selectByAppId(appId);
+				cacheService.putIfAbsent(CacheKeyConstant.EHCACHE_APP_AUTH_GROUPS, appId, list);
 				return list;
 		}
 }

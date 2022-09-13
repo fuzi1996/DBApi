@@ -21,8 +21,8 @@
         <h4>Header：</h4>
 
         <el-form
-          label-width='150px'
-          style='width: 600px'
+          label-width='2000px'
+          style='width: 650px'
         >
           <el-form-item label='Content-Type'>
             <el-input
@@ -66,6 +66,7 @@
             <el-input
               v-if='!item.type.startsWith("Array")'
               v-model='item.value'
+              :placeholder='item.note'
               class='input-value'
             />
             
@@ -76,6 +77,7 @@
               <div class='param-value-container'>
                 <el-input
                   v-model='childItem.va'
+                  :placeholder='childItem.note'
                   class='param-value'
                 />
                 <el-button

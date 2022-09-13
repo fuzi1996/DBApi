@@ -29,7 +29,7 @@ public class ApiAuthFilter implements Filter {
     private IAppTokenService tokenService;
 
     @Autowired
-    private IAppService IAppService;
+    private IAppService appService;
 
     @Value("${dbapi.api.context}")
     private String apiContext;
@@ -66,13 +66,15 @@ public class ApiAuthFilter implements Filter {
                     return;
                 } else {
                     String appId = tokenService.verifyToken(tokenStr);
-                    if (appId == null) {
+                    if (StringUtils.isBlank(appId)) {
+                        log.error("token [{}] matched no appid", tokenStr);
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getWriter().append(JSON.toJSONString(ResponseDTO.fail("Token Invalid!")));
                         return;
                     } else {
-                        List<String> authGroups = IAppService.getAuthGroups(appId);
+                        List<String> authGroups = appService.getAuthGroups(appId);
                         if (!authGroups.contains(config.getGroupId())) {
+                            log.error("token[{}] matched appid[{}], but appid not authorized", tokenStr, appId);
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.getWriter().append(JSON.toJSONString(ResponseDTO.fail("Token Invalid!")));
                             return;
