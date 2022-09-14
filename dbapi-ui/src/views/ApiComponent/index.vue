@@ -49,7 +49,6 @@
                   ref='refForm'
                   class='card-list-form'
                   :model='form'
-                  :rules='rules'
                   size='small'
                 >
                   <el-row :gutter='15'>
@@ -254,14 +253,12 @@
     </table-search>
 
     <open-window
-      v-model:show='apiGroupVisiable'
-      :is-show='apiGroupVisiable'
+      v-model:is-show='apiGroupVisiable'
       title='API分组管理'
     >
       <ApiGroup />
     </open-window>
   </div>
-  
 </template>
 
 <script lang="ts">
@@ -353,7 +350,6 @@ export default defineComponent({
       getAllApis().then(({ data }) => {
         tableData.data.splice(0)
         tableData.data.push(...data.data)
-        console.log('tableData.data',tableData.data)
       })
     }
 

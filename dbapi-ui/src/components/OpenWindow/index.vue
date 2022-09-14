@@ -1,22 +1,23 @@
 <template>
   <transition name='el-fade-in'>
-    <el-dialog
-      :model-value='isShow' 
-      :title='title'
-      :width='width'
-      :before-close='handleBeforeClose'
-    >
-      <slot name='default' />
-      <template #footer>
-        <span class='dialog-footer'>
-          <slot name='btn' />
-          <el-button @click='close'>{{ closeBtnLabel }}</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <div>
+      <el-dialog
+        :model-value='isShow' 
+        :title='title'
+        :width='width'
+        :before-close='handleBeforeClose'
+      >
+        <slot name='default' />
+        <template #footer>
+          <span class='dialog-footer'>
+            <slot name='btn' />
+            <el-button @click='close'>{{ closeBtnLabel }}</el-button>
+          </span>
+        </template>
+      </el-dialog>
+    </div>
   </transition>
 </template>
-
 <script lang="ts">
 import { defineComponent, SetupContext,ref } from 'vue'
 export default defineComponent({
@@ -39,10 +40,10 @@ export default defineComponent({
       default: '关闭'
     }
   },
-  emits: ['update:show','beforeClose'],
+  emits: ['update:isShow','beforeClose'],
   setup(props, context: SetupContext) {
     const close = () => {
-      context.emit('update:show', !props.isShow)
+      context.emit('update:isShow', !props.isShow)
     }
     const handleBeforeClose = () => context.emit('beforeClose')
     return {
