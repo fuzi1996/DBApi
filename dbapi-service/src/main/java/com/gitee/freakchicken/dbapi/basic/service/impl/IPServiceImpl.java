@@ -48,6 +48,11 @@ public class IPServiceImpl implements IPService {
         IPRuleCache.status = map.get("status");
     }
 
+    @Override
+    public void reset() {
+        this.init();
+    }
+
     /**
      * @param mode
      * @param ip   字符串

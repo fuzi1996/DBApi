@@ -3,7 +3,9 @@ package com.gitee.freakchicken.dbapi.basic.service;
 import java.util.Map;
 
 public interface IPService {
-    
+
+    void reset();
+
     void on(String mode, String ip);
 
     void _on(String mode, String ip);

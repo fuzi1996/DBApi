@@ -17,7 +17,7 @@ public class MetaCacheController {
 
     @RequestMapping("/iprule/sync")
     public ResponseDTO hello(){
-        ipService.init();
+        ipService.reset();
         return ResponseDTO.successWithData(null);
     }
 }
