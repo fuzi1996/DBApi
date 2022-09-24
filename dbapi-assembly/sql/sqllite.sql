@@ -37,36 +37,50 @@ CREATE TABLE "api_config" (
 );
 
 DROP TABLE IF EXISTS "api_group";
-CREATE TABLE "api_group" (
-  "id" text NOT NULL,
-  "name" TEXT NOT NULL,
-  PRIMARY KEY ("id"),
-  CONSTRAINT "uk_api_group_name" UNIQUE ("name" ASC)
+CREATE TABLE "api_group"
+(
+    "id"   text NOT NULL,
+    "name" TEXT NOT NULL,
+    PRIMARY KEY ("id"),
+    CONSTRAINT "uk_api_group_name" UNIQUE ("name" ASC)
 );
 
 DROP TABLE IF EXISTS "api_sql";
-CREATE TABLE "api_sql" (
-  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  "api_id" text,
-  "sql_text" TEXT,
-  "transform_plugin" TEXT,
-  "transform_plugin_params" TEXT
+CREATE TABLE "api_sql"
+(
+    "id"                      integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "api_id"                  text,
+    "sql_text"                TEXT,
+    "transform_plugin"        TEXT,
+    "transform_plugin_params" TEXT
+);
+
+DROP TABLE IF EXISTS `app_info`;
+CREATE TABLE `app_info`
+(
+    `id`          TEXT NOT NULL PRIMARY KEY,
+    `name`        TEXT,
+    `note`        TEXT,
+    `secret`      TEXT,
+    `expire_desc` TEXT,
+    `expire_time` TEXT
 );
 
 DROP TABLE IF EXISTS "datasource";
-CREATE TABLE "datasource" (
-  "id" text NOT NULL,
-  "name" TEXT,
-  "note" TEXT,
-  "type" TEXT,
-  "url" TEXT,
-  "username" TEXT,
-  "password" TEXT,
-  "driver" text NOT NULL,
-  "table_sql" text,
-  "create_time" text,
-  "update_time" text,
-  PRIMARY KEY ("id")
+CREATE TABLE "datasource"
+(
+    "id"          text NOT NULL,
+    "name"        TEXT,
+    "note"        TEXT,
+    "type"        TEXT,
+    "url"         TEXT,
+    "username"    TEXT,
+    "password"    TEXT,
+    "driver"      text NOT NULL,
+    "table_sql"   text,
+    "create_time" text,
+    "update_time" text,
+    PRIMARY KEY ("id")
 );
 
 DROP TABLE IF EXISTS "firewall";

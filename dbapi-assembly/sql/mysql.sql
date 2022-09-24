@@ -47,24 +47,38 @@ CREATE TABLE `api_group`  (
 );
 
 DROP TABLE IF EXISTS `api_sql`;
-CREATE TABLE `api_sql`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `api_id` varchar(11) NOT NULL,
-  `sql_text` text NOT NULL,
-  `transform_plugin` varchar(255) NULL DEFAULT NULL,
-  `transform_plugin_params` varchar(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+CREATE TABLE `api_sql`
+(
+    `id`                      int(0) NOT NULL AUTO_INCREMENT,
+    `api_id`                  varchar(11) NOT NULL,
+    `sql_text`                text        NOT NULL,
+    `transform_plugin`        varchar(255) NULL DEFAULT NULL,
+    `transform_plugin_params` varchar(255) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+);
+
+DROP TABLE IF EXISTS `app_info`;
+CREATE TABLE `app_info`
+(
+    `id`          varchar(255) NOT NULL,
+    `name`        varchar(255) NULL DEFAULT NULL,
+    `note`        varchar(1024) NULL DEFAULT NULL,
+    `secret`      varchar(255) NULL DEFAULT NULL,
+    `expire_desc` varchar(255) NULL DEFAULT NULL,
+    `expire_time` varchar(255) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 );
 
 DROP TABLE IF EXISTS `datasource`;
-CREATE TABLE `datasource`  (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NULL DEFAULT NULL,
-  `note` varchar(255) NULL DEFAULT NULL,
-  `type` varchar(255) NULL DEFAULT NULL,
-  `url` varchar(255) NULL DEFAULT NULL,
-  `username` varchar(255) NULL DEFAULT NULL,
-  `password` varchar(255) NULL DEFAULT NULL,
+CREATE TABLE `datasource`
+(
+    `id`        varchar(255) NOT NULL,
+    `name`      varchar(255) NULL DEFAULT NULL,
+    `note`      varchar(255) NULL DEFAULT NULL,
+    `type`      varchar(255) NULL DEFAULT NULL,
+    `url`       varchar(255) NULL DEFAULT NULL,
+    `username`  varchar(255) NULL DEFAULT NULL,
+    `password`  varchar(255) NULL DEFAULT NULL,
   `driver` varchar(100) NULL DEFAULT NULL,
   `table_sql` varchar(255) NULL DEFAULT NULL,
   `create_time` varchar(20) NULL DEFAULT NULL,
